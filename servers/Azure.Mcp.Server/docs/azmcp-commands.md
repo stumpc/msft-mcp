@@ -1923,6 +1923,67 @@ azmcp managedlustre fs blob import delete --subscription <subscription> \
                                          --job-name <job-name>
 ```
 
+### Azure NetApp Files Operations
+
+#### Account Operations
+
+```bash
+# Get details for all NetApp Files accounts in a subscription, or a specific account
+# ❌ Destructive | ✅ Idempotent | ❌ OpenWorld | ✅ ReadOnly | ❌ Secret | ❌ LocalRequired
+azmcp netappfiles account get --subscription <subscription>
+azmcp netappfiles account get --subscription <subscription> --account <account>
+```
+
+#### Backup Policy Operations
+
+```bash
+# Get details for all NetApp Files backup policies in a subscription, or filter by account and/or backup policy name
+# ❌ Destructive | ✅ Idempotent | ❌ OpenWorld | ✅ ReadOnly | ❌ Secret | ❌ LocalRequired
+azmcp netappfiles backuppolicy get --subscription <subscription>
+azmcp netappfiles backuppolicy get --subscription <subscription> --account <account>
+azmcp netappfiles backuppolicy get --subscription <subscription> --account <account> --backupPolicy <backup-policy>
+```
+
+#### Backup Vault Operations
+
+```bash
+# Get details for all NetApp Files backup vaults in a subscription, or filter by account and/or backup vault name
+# ❌ Destructive | ✅ Idempotent | ❌ OpenWorld | ✅ ReadOnly | ❌ Secret | ❌ LocalRequired
+azmcp netappfiles backupvault get --subscription <subscription>
+azmcp netappfiles backupvault get --subscription <subscription> --account <account>
+azmcp netappfiles backupvault get --subscription <subscription> --account <account> --backupVault <backup-vault>
+```
+
+#### Capacity Pool Operations
+
+```bash
+# Get details for all NetApp Files capacity pools in a subscription, or filter by account and/or pool name
+# ❌ Destructive | ✅ Idempotent | ❌ OpenWorld | ✅ ReadOnly | ❌ Secret | ❌ LocalRequired
+azmcp netappfiles pool get --subscription <subscription>
+azmcp netappfiles pool get --subscription <subscription> --account <account>
+azmcp netappfiles pool get --subscription <subscription> --account <account> --pool <pool>
+```
+
+#### Volume Operations
+
+```bash
+# Get details for all NetApp Files volumes in a subscription, or filter by account, pool, and/or volume name
+# ❌ Destructive | ✅ Idempotent | ❌ OpenWorld | ✅ ReadOnly | ❌ Secret | ❌ LocalRequired
+azmcp netappfiles volume get --subscription <subscription>
+azmcp netappfiles volume get --subscription <subscription> --account <account>
+azmcp netappfiles volume get --subscription <subscription> --account <account> --pool <pool> --volume <volume>
+```
+
+#### Volume Group Operations
+
+```bash
+# Get details for all NetApp Files volume groups in a subscription, or filter by account and/or volume group name
+# ❌ Destructive | ✅ Idempotent | ❌ OpenWorld | ✅ ReadOnly | ❌ Secret | ❌ LocalRequired
+azmcp netappfiles volumegroup get --subscription <subscription>
+azmcp netappfiles volumegroup get --subscription <subscription> --account <account>
+azmcp netappfiles volumegroup get --subscription <subscription> --account <account> --volumeGroup <volumeGroup>
+```
+
 ### Azure Migrate Operations
 
 #### Platform Landing Zone Modification Guidance
