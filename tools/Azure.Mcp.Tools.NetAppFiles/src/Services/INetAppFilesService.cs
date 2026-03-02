@@ -50,6 +50,15 @@ public interface INetAppFilesService
         RetryPolicyOptions? retryPolicy = null,
         CancellationToken cancellationToken = default);
 
+    Task<ResourceQueryResults<BackupInfo>> GetBackupDetails(
+        string? account,
+        string? backupVault,
+        string? backup,
+        string subscription,
+        string? tenant = null,
+        RetryPolicyOptions? retryPolicy = null,
+        CancellationToken cancellationToken = default);
+
     Task<ResourceQueryResults<SnapshotInfo>> GetSnapshotDetails(
         string? account,
         string? pool,

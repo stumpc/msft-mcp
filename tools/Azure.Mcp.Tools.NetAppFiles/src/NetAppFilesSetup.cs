@@ -32,6 +32,7 @@ public class NetAppFilesSetup : IAreaSetup
         services.AddSingleton<AccountGetCommand>();
         services.AddSingleton<BackupCreateCommand>();
         services.AddSingleton<BackupPolicyCreateCommand>();
+        services.AddSingleton<BackupGetCommand>();
         services.AddSingleton<BackupPolicyGetCommand>();
         services.AddSingleton<BackupVaultGetCommand>();
         services.AddSingleton<BackupVaultCreateCommand>();
@@ -71,8 +72,11 @@ public class NetAppFilesSetup : IAreaSetup
         var accountGet = serviceProvider.GetRequiredService<AccountGetCommand>();
         account.AddCommand(accountGet.Name, accountGet);
 
-        var backup = new CommandGroup("backup", "NetApp Files backup operations - Commands for creating and managing NetApp Files backups in your Azure subscription.");
+        var backup = new CommandGroup("backup", "NetApp Files backup operations - Commands for listing and getting NetApp Files backups in your Azure subscription.");
         netAppFiles.AddSubGroup(backup);
+
+        var backupGet = serviceProvider.GetRequiredService<BackupGetCommand>();
+        backup.AddCommand(backupGet.Name, backupGet);
 
         var backupCreate = serviceProvider.GetRequiredService<BackupCreateCommand>();
         backup.AddCommand(backupCreate.Name, backupCreate);
