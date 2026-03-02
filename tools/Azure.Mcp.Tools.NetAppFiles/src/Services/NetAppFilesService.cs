@@ -338,6 +338,72 @@ public class NetAppFilesService(
             ProvisioningState: backupVaultData.Properties?.ProvisioningState);
     }
 
+    public async Task<ResourceQueryResults<BackupInfo>> GetBackupDetails(
+        string? account,
+        string? backupVault,
+        string? backup,
+        string subscription,
+        string? tenant = null,
+        RetryPolicyOptions? retryPolicy = null,
+        CancellationToken cancellationToken = default)
+    {
+        ValidateRequiredParameters((nameof(subscription), subscription));
+
+        var filters = new List<string>();
+        if (!string.IsNullOrEmpty(account))
+        {
+            filters.Add($"name startswith '{EscapeKqlString(account)}/'");
+        }
+        if (!string.IsNullOrEmpty(backupVault) && !string.IsNullOrEmpty(account))
+        {
+            filters.Add($"name startswith '{EscapeKqlString(account)}/{EscapeKqlString(backupVault)}/'");
+        }
+        else if (!string.IsNullOrEmpty(backupVault))
+        {
+            filters.Add($"name contains '/{EscapeKqlString(backupVault)}/'");
+        }
+        if (!string.IsNullOrEmpty(backup))
+        {
+            filters.Add($"name endswith '/{EscapeKqlString(backup)}'");
+        }
+
+        string? additionalFilter = filters.Count > 0 ? string.Join(" and ", filters) : null;
+
+        try
+        {
+            return await ExecuteResourceQueryAsync(
+                "Microsoft.NetApp/netAppAccounts/backupVaults/backups",
+                null,
+                subscription,
+                retryPolicy,
+                ConvertToBackupInfoModel,
+                additionalFilter: additionalFilter,
+                cancellationToken: cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error retrieving NetApp Files backup details. Subscription: {Subscription}", subscription);
+            throw;
+        }
+    }
+
+    private static BackupInfo ConvertToBackupInfoModel(JsonElement item)
+    {
+        BackupData? backupData = BackupData.FromJson(item);
+        if (backupData == null)
+            throw new InvalidOperationException("Failed to parse NetApp backup data");
+
+        return new BackupInfo(
+            Name: backupData.ResourceName ?? "Unknown",
+            Location: backupData.Location,
+            ResourceGroup: backupData.ResourceGroup,
+            ProvisioningState: backupData.Properties?.ProvisioningState,
+            BackupType: backupData.Properties?.BackupType,
+            Size: backupData.Properties?.Size,
+            Label: backupData.Properties?.Label,
+            CreationDate: backupData.Properties?.CreationDate);
+    }
+
     public async Task<ResourceQueryResults<SnapshotInfo>> GetSnapshotDetails(
         string? account,
         string? pool,
