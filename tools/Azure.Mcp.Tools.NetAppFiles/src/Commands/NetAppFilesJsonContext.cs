@@ -4,6 +4,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Azure.Mcp.Tools.NetAppFiles.Commands.Account;
+using Azure.Mcp.Tools.NetAppFiles.Commands.Backup;
 using Azure.Mcp.Tools.NetAppFiles.Commands.BackupPolicy;
 using Azure.Mcp.Tools.NetAppFiles.Commands.BackupVault;
 using Azure.Mcp.Tools.NetAppFiles.Commands.Pool;
@@ -18,6 +19,7 @@ using Azure.Mcp.Tools.NetAppFiles.Services.Models;
 namespace Azure.Mcp.Tools.NetAppFiles.Commands;
 
 [JsonSerializable(typeof(AccountGetCommand.AccountGetCommandResult))]
+[JsonSerializable(typeof(BackupGetCommand.BackupGetCommandResult))]
 [JsonSerializable(typeof(BackupPolicyGetCommand.BackupPolicyGetCommandResult))]
 [JsonSerializable(typeof(BackupVaultGetCommand.BackupVaultGetCommandResult))]
 [JsonSerializable(typeof(PoolGetCommand.PoolGetCommandResult))]
@@ -27,6 +29,7 @@ namespace Azure.Mcp.Tools.NetAppFiles.Commands;
 [JsonSerializable(typeof(VolumeGetCommand.VolumeGetCommandResult))]
 [JsonSerializable(typeof(VolumeGroupGetCommand.VolumeGroupGetCommandResult))]
 [JsonSerializable(typeof(NetAppAccountInfo))]
+[JsonSerializable(typeof(BackupInfo))]
 [JsonSerializable(typeof(BackupPolicyInfo))]
 [JsonSerializable(typeof(BackupVaultInfo))]
 [JsonSerializable(typeof(CapacityPoolInfo))]
@@ -36,6 +39,7 @@ namespace Azure.Mcp.Tools.NetAppFiles.Commands;
 [JsonSerializable(typeof(SnapshotPolicyInfo))]
 [JsonSerializable(typeof(VolumeGroupInfo))]
 [JsonSerializable(typeof(NetAppAccountData))]
+[JsonSerializable(typeof(BackupData))]
 [JsonSerializable(typeof(BackupPolicyData))]
 [JsonSerializable(typeof(BackupVaultData))]
 [JsonSerializable(typeof(CapacityPoolData))]

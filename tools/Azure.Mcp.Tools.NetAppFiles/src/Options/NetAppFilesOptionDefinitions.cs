@@ -8,6 +8,7 @@ public static class NetAppFilesOptionDefinitions
     public const string AccountName = "account";
     public const string PoolName = "pool";
     public const string VolumeName = "volume";
+    public const string BackupName = "backup";
     public const string BackupPolicyName = "backupPolicy";
     public const string BackupVaultName = "backupVault";
     public const string SnapshotName = "snapshot";
@@ -29,6 +30,12 @@ public static class NetAppFilesOptionDefinitions
     public static readonly Option<string> Volume = new($"--{VolumeName}")
     {
         Description = "The name of the volume (e.g., 'myvolume').",
+        Required = true
+    };
+
+    public static readonly Option<string> Backup = new($"--{BackupName}")
+    {
+        Description = "The name of the backup (e.g., 'mybackup').",
         Required = true
     };
 

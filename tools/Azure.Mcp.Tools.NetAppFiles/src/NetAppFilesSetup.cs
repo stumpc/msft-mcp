@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using Azure.Mcp.Tools.NetAppFiles.Commands.Account;
+using Azure.Mcp.Tools.NetAppFiles.Commands.Backup;
 using Azure.Mcp.Tools.NetAppFiles.Commands.BackupPolicy;
 using Azure.Mcp.Tools.NetAppFiles.Commands.BackupVault;
 using Azure.Mcp.Tools.NetAppFiles.Commands.Pool;
@@ -28,6 +29,7 @@ public class NetAppFilesSetup : IAreaSetup
         services.AddSingleton<INetAppFilesService, NetAppFilesService>();
 
         services.AddSingleton<AccountGetCommand>();
+        services.AddSingleton<BackupGetCommand>();
         services.AddSingleton<BackupPolicyGetCommand>();
         services.AddSingleton<BackupVaultGetCommand>();
         services.AddSingleton<PoolGetCommand>();
@@ -57,6 +59,12 @@ public class NetAppFilesSetup : IAreaSetup
 
         var accountGet = serviceProvider.GetRequiredService<AccountGetCommand>();
         account.AddCommand(accountGet.Name, accountGet);
+
+        var backup = new CommandGroup("backup", "NetApp Files backup operations - Commands for listing and getting NetApp Files backups in your Azure subscription.");
+        netAppFiles.AddSubGroup(backup);
+
+        var backupGet = serviceProvider.GetRequiredService<BackupGetCommand>();
+        backup.AddCommand(backupGet.Name, backupGet);
 
         var backupPolicy = new CommandGroup("backuppolicy", "NetApp Files backup policy operations - Commands for listing and managing NetApp Files backup policies in your Azure subscription.");
         netAppFiles.AddSubGroup(backupPolicy);
