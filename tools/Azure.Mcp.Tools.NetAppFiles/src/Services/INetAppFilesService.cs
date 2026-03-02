@@ -101,6 +101,20 @@ public interface INetAppFilesService
         RetryPolicyOptions? retryPolicy = null,
         CancellationToken cancellationToken = default);
 
+    Task<NetAppVolumeCreateResult> UpdateVolume(
+        string account,
+        string pool,
+        string volume,
+        string resourceGroup,
+        string location,
+        string subscription,
+        long? usageThreshold = null,
+        string? serviceLevel = null,
+        Dictionary<string, string>? tags = null,
+        string? tenant = null,
+        RetryPolicyOptions? retryPolicy = null,
+        CancellationToken cancellationToken = default);
+
     Task<NetAppAccountCreateResult> CreateAccount(
         string account,
         string resourceGroup,
@@ -110,7 +124,30 @@ public interface INetAppFilesService
         RetryPolicyOptions? retryPolicy = null,
         CancellationToken cancellationToken = default);
 
+    Task<NetAppAccountCreateResult> UpdateAccount(
+        string account,
+        string resourceGroup,
+        string location,
+        string subscription,
+        Dictionary<string, string>? tags = null,
+        string? tenant = null,
+        RetryPolicyOptions? retryPolicy = null,
+        CancellationToken cancellationToken = default);
+
     Task<BackupPolicyCreateResult> CreateBackupPolicy(
+        string account,
+        string backupPolicy,
+        string resourceGroup,
+        string location,
+        string subscription,
+        int? dailyBackupsToKeep = null,
+        int? weeklyBackupsToKeep = null,
+        int? monthlyBackupsToKeep = null,
+        string? tenant = null,
+        RetryPolicyOptions? retryPolicy = null,
+        CancellationToken cancellationToken = default);
+
+    Task<BackupPolicyCreateResult> UpdateBackupPolicy(
         string account,
         string backupPolicy,
         string resourceGroup,
@@ -136,12 +173,35 @@ public interface INetAppFilesService
         RetryPolicyOptions? retryPolicy = null,
         CancellationToken cancellationToken = default);
 
+    Task<BackupCreateResult> UpdateBackup(
+        string account,
+        string backupVault,
+        string backup,
+        string resourceGroup,
+        string location,
+        string subscription,
+        string? label = null,
+        string? tenant = null,
+        RetryPolicyOptions? retryPolicy = null,
+        CancellationToken cancellationToken = default);
+
     Task<BackupVaultCreateResult> CreateBackupVault(
         string account,
         string backupVault,
         string resourceGroup,
         string location,
         string subscription,
+        string? tenant = null,
+        RetryPolicyOptions? retryPolicy = null,
+        CancellationToken cancellationToken = default);
+
+    Task<BackupVaultCreateResult> UpdateBackupVault(
+        string account,
+        string backupVault,
+        string resourceGroup,
+        string location,
+        string subscription,
+        Dictionary<string, string>? tags = null,
         string? tenant = null,
         RetryPolicyOptions? retryPolicy = null,
         CancellationToken cancellationToken = default);
@@ -161,7 +221,33 @@ public interface INetAppFilesService
         RetryPolicyOptions? retryPolicy = null,
         CancellationToken cancellationToken = default);
 
+    Task<CapacityPoolCreateResult> UpdatePool(
+        string account,
+        string pool,
+        string resourceGroup,
+        string location,
+        string subscription,
+        long? size = null,
+        string? qosType = null,
+        bool? coolAccess = null,
+        Dictionary<string, string>? tags = null,
+        string? tenant = null,
+        RetryPolicyOptions? retryPolicy = null,
+        CancellationToken cancellationToken = default);
+
     Task<SnapshotCreateResult> CreateSnapshot(
+        string account,
+        string pool,
+        string volume,
+        string snapshot,
+        string resourceGroup,
+        string location,
+        string subscription,
+        string? tenant = null,
+        RetryPolicyOptions? retryPolicy = null,
+        CancellationToken cancellationToken = default);
+
+    Task<SnapshotCreateResult> UpdateSnapshot(
         string account,
         string pool,
         string volume,
@@ -192,6 +278,25 @@ public interface INetAppFilesService
         RetryPolicyOptions? retryPolicy = null,
         CancellationToken cancellationToken = default);
 
+    Task<SnapshotPolicyCreateResult> UpdateSnapshotPolicy(
+        string account,
+        string snapshotPolicy,
+        string resourceGroup,
+        string location,
+        string subscription,
+        int? hourlyScheduleMinute = null,
+        int? hourlyScheduleSnapshotsToKeep = null,
+        int? dailyScheduleHour = null,
+        int? dailyScheduleMinute = null,
+        int? dailyScheduleSnapshotsToKeep = null,
+        string? weeklyScheduleDay = null,
+        int? weeklyScheduleSnapshotsToKeep = null,
+        string? monthlyScheduleDaysOfMonth = null,
+        int? monthlyScheduleSnapshotsToKeep = null,
+        string? tenant = null,
+        RetryPolicyOptions? retryPolicy = null,
+        CancellationToken cancellationToken = default);
+
     Task<VolumeGroupCreateResult> CreateVolumeGroup(
         string account,
         string volumeGroup,
@@ -201,6 +306,18 @@ public interface INetAppFilesService
         string applicationIdentifier,
         string subscription,
         string? groupDescription = null,
+        string? tenant = null,
+        RetryPolicyOptions? retryPolicy = null,
+        CancellationToken cancellationToken = default);
+
+    Task<VolumeGroupCreateResult> UpdateVolumeGroup(
+        string account,
+        string volumeGroup,
+        string resourceGroup,
+        string location,
+        string subscription,
+        string? groupDescription = null,
+        Dictionary<string, string>? tags = null,
         string? tenant = null,
         RetryPolicyOptions? retryPolicy = null,
         CancellationToken cancellationToken = default);
