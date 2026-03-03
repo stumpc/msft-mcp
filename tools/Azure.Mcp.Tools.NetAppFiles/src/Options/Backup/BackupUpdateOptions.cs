@@ -10,7 +10,7 @@ public class BackupUpdateOptions : BaseNetAppFilesOptions
     [JsonPropertyName(NetAppFilesOptionDefinitions.BackupVaultName)]
     public string? BackupVault { get; set; }
 
-    [JsonPropertyName(NetAppFilesOptionDefinitions.BackupNameConst)]
+    [JsonPropertyName(NetAppFilesOptionDefinitions.BackupName)]
     public string? Backup { get; set; }
 
     [JsonPropertyName(NetAppFilesOptionDefinitions.LocationName)]
