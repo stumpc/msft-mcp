@@ -20,6 +20,7 @@ namespace Azure.Mcp.Tools.NetAppFiles.Commands.Snapshot;
 public sealed class SnapshotCreateCommand(ILogger<SnapshotCreateCommand> logger) : SubscriptionCommand<SnapshotCreateOptions>()
 {
     private const string CommandTitle = "Create NetApp Files Snapshot";
+
     private readonly ILogger<SnapshotCreateCommand> _logger = logger;
 
     public override string Id => "b4d8e2f0-6c3a-4b9d-a7e1-d5f9c3a8b2e6";

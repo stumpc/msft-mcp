@@ -20,6 +20,7 @@ namespace Azure.Mcp.Tools.NetAppFiles.Commands.Pool;
 public sealed class PoolCreateCommand(ILogger<PoolCreateCommand> logger) : SubscriptionCommand<PoolCreateOptions>()
 {
     private const string CommandTitle = "Create NetApp Files Capacity Pool";
+
     private readonly ILogger<PoolCreateCommand> _logger = logger;
 
     public override string Id => "c4f8a2e6-7d3b-4c9e-a1f5-e8b6d3c7a2f4";

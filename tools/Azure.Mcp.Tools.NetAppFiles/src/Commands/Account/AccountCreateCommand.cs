@@ -20,6 +20,7 @@ namespace Azure.Mcp.Tools.NetAppFiles.Commands.Account;
 public sealed class AccountCreateCommand(ILogger<AccountCreateCommand> logger) : SubscriptionCommand<AccountCreateOptions>()
 {
     private const string CommandTitle = "Create NetApp Files Account";
+
     private readonly ILogger<AccountCreateCommand> _logger = logger;
 
     public override string Id => "b8d4e2a6-5c3f-4e7a-9b1d-f6a2c8e3d5b7";
