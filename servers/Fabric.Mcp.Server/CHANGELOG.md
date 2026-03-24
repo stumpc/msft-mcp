@@ -5,9 +5,34 @@ All notable changes to the Microsoft Fabric MCP Server will be documented in thi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## 0.0.0-beta.9 (Unreleased)
+## 0.0.0-beta.10 (2026-03-24)
 
 ### Features Added
+
+### Breaking Changes
+
+- Changed Fabric tool names to use dash instead of underscore. create-item, api-examples, best-practices, item-definitions, platform-api-spec, and workload-api-spec have dashes now.
+
+### Bugs Fixed
+
+- Added filtering on LocalRequired when running in remote mode
+- Fixed directory traversal vulnerability in OneLake file operations. Paths containing .. sequences are now rejected before any HTTP request is made.
+
+### Other Changes
+
+- Reintroduce capturing error information in telemetry with standard 'exception.message', 'exception.type', and 'exception.stacktrace' telemetry tags, replacing ErrorDetails tag.
+- Updated Fabric REST API specifications and examples. Updated item definition documentation
+
+## 0.0.0-beta.9 (2026-03-03)
+
+### Features Added
+
+- Added OneLake table API commands for configuration, namespace management, and table metadata retrieval:
+    - onelake table config get
+    - onelake table namespace list
+    - onelake table namespace get
+    - onelake table list
+    - onelake table get
 
 ### Breaking Changes
 
@@ -15,7 +40,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Other Changes
 
-## 0.0.0-beta.8 (Unreleased)
+## 0.0.0-beta.8 (2026-02-10)
 
 ### Features Added
 

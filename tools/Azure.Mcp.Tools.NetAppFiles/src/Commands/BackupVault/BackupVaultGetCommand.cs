@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using System.Text.Json.Serialization;
 using Azure.Mcp.Core.Commands.Subscription;
 using Azure.Mcp.Core.Extensions;
 using Azure.Mcp.Tools.NetAppFiles.Models;
@@ -18,6 +17,7 @@ namespace Azure.Mcp.Tools.NetAppFiles.Commands.BackupVault;
 public sealed class BackupVaultGetCommand(ILogger<BackupVaultGetCommand> logger) : SubscriptionCommand<BackupVaultGetOptions>()
 {
     private const string CommandTitle = "Get NetApp Files Backup Vault Details";
+
     private readonly ILogger<BackupVaultGetCommand> _logger = logger;
 
     public override string Id => "a1c3e5f7-9b2d-4f6a-8e0c-d2b4a6c8e0f2";

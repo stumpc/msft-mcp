@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using System.Text.Json.Serialization;
 using Azure.Mcp.Core.Commands.Subscription;
 using Azure.Mcp.Core.Extensions;
 using Azure.Mcp.Tools.NetAppFiles.Models;
@@ -18,6 +17,7 @@ namespace Azure.Mcp.Tools.NetAppFiles.Commands.Volume;
 public sealed class VolumeGetCommand(ILogger<VolumeGetCommand> logger) : SubscriptionCommand<VolumeGetOptions>()
 {
     private const string CommandTitle = "Get NetApp Files Volume Details";
+
     private readonly ILogger<VolumeGetCommand> _logger = logger;
 
     public override string Id => "b8d4f2c5-0e3a-4b9f-c6d7-e4f8a1b3c5d6";

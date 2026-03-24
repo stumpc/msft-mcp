@@ -30,39 +30,32 @@ public class RedisService(ISubscriptionService _subscriptionService, ITenantServ
     {
         ValidateRequiredParameters((nameof(subscription), subscription));
 
+        var subscriptionResource = await _subscriptionService.GetSubscription(subscription, tenant, retryPolicy, cancellationToken)
+            ?? throw new Exception($"Subscription '{subscription}' not found");
+
+        var resources = new List<Resource>();
+        var resourcesTasks = new List<Task<IEnumerable<Resource>>>();
+
         try
         {
-            var subscriptionResource = await _subscriptionService.GetSubscription(subscription, tenant, retryPolicy, cancellationToken)
-                ?? throw new Exception($"Subscription '{subscription}' not found");
-
-            var resources = new List<Resource>();
-            var resourcesTasks = new List<Task<IEnumerable<Resource>>>();
-
-            try
+            resourcesTasks.Add(ListAcrResourcesAsync(subscriptionResource, cancellationToken));
+            resourcesTasks.Add(ListAmrResourcesAsync(subscriptionResource, cancellationToken));
+            await Task.WhenAll(resourcesTasks);
+        }
+        catch (Exception)
+        { }
+        finally
+        {
+            foreach (var resourceTask in resourcesTasks)
             {
-                resourcesTasks.Add(ListAcrResourcesAsync(subscriptionResource, cancellationToken));
-                resourcesTasks.Add(ListAmrResourcesAsync(subscriptionResource, cancellationToken));
-                await Task.WhenAll(resourcesTasks);
-            }
-            catch (Exception)
-            { }
-            finally
-            {
-                foreach (var resourceTask in resourcesTasks)
+                if (resourceTask.Status == TaskStatus.RanToCompletion)
                 {
-                    if (resourceTask.Status == TaskStatus.RanToCompletion)
-                    {
-                        resources.AddRange(resourceTask.Result);
-                    }
+                    resources.AddRange(resourceTask.Result);
                 }
             }
+        }
 
-            return resources;
-        }
-        catch (Exception ex)
-        {
-            throw new Exception($"Error retrieving Redis resources: {ex.Message}", ex);
-        }
+        return resources;
     }
 
     public async Task<Resource> CreateResourceAsync(
@@ -72,6 +65,7 @@ public class RedisService(ISubscriptionService _subscriptionService, ITenantServ
         string location,
         string? sku,
         bool? accessKeyAuthenticationEnabled = false,
+        bool? publicNetworkAccessEnabled = false,
         string[]? modules = null,
         string? tenant = null,
         RetryPolicyOptions? retryPolicy = null,
@@ -90,73 +84,71 @@ public class RedisService(ISubscriptionService _subscriptionService, ITenantServ
             sku = "Balanced_B0";
         }
 
-        try
+        var subscriptionResource = await _subscriptionService.GetSubscription(subscription, tenant, retryPolicy, cancellationToken)
+            ?? throw new Exception($"Subscription '{subscription}' not found");
+
+        var resourceGroups = subscriptionResource.GetResourceGroups();
+        var resourceGroupResource = await resourceGroups.GetAsync(resourceGroup, cancellationToken);
+
+        if (resourceGroupResource.Value == null)
         {
-            var subscriptionResource = await _subscriptionService.GetSubscription(subscription, tenant, retryPolicy, cancellationToken)
-                ?? throw new Exception($"Subscription '{subscription}' not found");
-
-            var resourceGroups = subscriptionResource.GetResourceGroups();
-            var resourceGroupResource = await resourceGroups.GetAsync(resourceGroup, cancellationToken);
-
-            if (resourceGroupResource.Value == null)
-            {
-                throw new Exception($"Resource group '{resourceGroup}' not found in subscription '{subscription}'");
-            }
-
-            var accessKeyAuthenticationString = accessKeyAuthenticationEnabled == true
-                ? "Enabled"
-                : "Disabled";
-
-            var bicepTemplate = GetCreateResourceBicepTemplate();
-
-            var requestedModules = new ModuleList()
-            {
-                Value = modules?.Select(m => new Module { Name = m }).ToArray() ?? []
-            };
-
-            var parameters = new RedisCreateParameters
-            {
-                ResourceName = new BicepParameter() { Value = name },
-                Location = new BicepParameter() { Value = location },
-                SkuName = new BicepParameter() { Value = sku },
-                AccessKeyAuthenticationEnabled = new BicepParameter() { Value = accessKeyAuthenticationString },
-                Modules = requestedModules
-            };
-
-            var parametersJson = JsonSerializer.Serialize(parameters, RedisJsonContext.Default.RedisCreateParameters);
-
-            var deploymentProperties = new ArmDeploymentProperties(ArmDeploymentMode.Incremental)
-            {
-                Template = BinaryData.FromString(bicepTemplate),
-                Parameters = BinaryData.FromString(parametersJson)
-            };
-
-            await resourceGroupResource.Value.GetArmDeployments()
-                .CreateOrUpdateAsync(
-                WaitUntil.Started,
-                $"redis-{name}-{DateTimeOffset.UtcNow:yyyyMMddHHmmss}",
-                new ArmDeploymentContent(deploymentProperties),
-                cancellationToken
-            );
-
-            return new Resource
-            {
-                Name = name,
-                Type = "AzureManagedRedis",
-                ResourceGroupName = resourceGroup,
-                SubscriptionId = subscription,
-                Location = location,
-                Sku = sku,
-                Status = "Creating"
-            };
+            throw new Exception($"Resource group '{resourceGroup}' not found in subscription '{subscription}'");
         }
-        catch (Exception ex)
+
+        var accessKeyAuthenticationString = accessKeyAuthenticationEnabled == true
+            ? "Enabled"
+            : "Disabled";
+
+        var publicNetworkAccessString = publicNetworkAccessEnabled == true
+            ? "Enabled"
+            : "Disabled";
+
+        var bicepTemplate = GetCreateResourceBicepTemplate();
+
+        var requestedModules = new ModuleList()
         {
-            throw new Exception($"Error creating Redis resource: {ex.Message}", ex);
-        }
+            Value = modules?.Select(m => new Module { Name = m }).ToArray() ?? []
+        };
+
+        var parameters = new RedisCreateParameters
+        {
+            ResourceName = new() { Value = name },
+            Location = new() { Value = location },
+            SkuName = new() { Value = sku },
+            AccessKeyAuthenticationEnabled = new() { Value = accessKeyAuthenticationString },
+            PublicNetworkAccess = new() { Value = publicNetworkAccessString },
+            Modules = requestedModules
+        };
+
+        var parametersJson = JsonSerializer.Serialize(parameters, RedisJsonContext.Default.RedisCreateParameters);
+
+        var deploymentProperties = new ArmDeploymentProperties(ArmDeploymentMode.Incremental)
+        {
+            Template = BinaryData.FromString(bicepTemplate),
+            Parameters = BinaryData.FromString(parametersJson)
+        };
+
+        await resourceGroupResource.Value.GetArmDeployments()
+            .CreateOrUpdateAsync(
+            WaitUntil.Started,
+            $"redis-{name}-{DateTimeOffset.UtcNow:yyyyMMddHHmmss}",
+            new(deploymentProperties),
+            cancellationToken
+        );
+
+        return new()
+        {
+            Name = name,
+            Type = "AzureManagedRedis",
+            ResourceGroupName = resourceGroup,
+            SubscriptionId = subscription,
+            Location = location,
+            Sku = sku,
+            Status = "Creating"
+        };
     }
 
-    private async Task<IEnumerable<Resource>> ListAcrResourcesAsync(SubscriptionResource subscriptionResource, CancellationToken cancellationToken)
+    private static async Task<IEnumerable<Resource>> ListAcrResourcesAsync(SubscriptionResource subscriptionResource, CancellationToken cancellationToken)
     {
         var resources = new List<Resource>();
 
@@ -216,9 +208,9 @@ public class RedisService(ISubscriptionService _subscriptionService, ITenantServ
                 PrivateEndpointConnections = resource.PrivateEndpointConnections.Any() ?
                     [.. resource.PrivateEndpointConnections.Select(connection => connection.Id.ToString())]
                     : null,
-                Identity = resource.Identity is null ? null : new ManagedIdentityInfo
+                Identity = resource.Identity is null ? null : new()
                 {
-                    SystemAssignedIdentity = new SystemAssignedIdentityInfo
+                    SystemAssignedIdentity = new()
                     {
                         Enabled = resource.Identity != null,
                         TenantId = resource.Identity?.TenantId?.ToString(),
@@ -260,7 +252,7 @@ public class RedisService(ISubscriptionService _subscriptionService, ITenantServ
         return resources;
     }
 
-    private async Task<IEnumerable<Resource>> ListAmrResourcesAsync(SubscriptionResource subscriptionResource, CancellationToken cancellationToken)
+    private static async Task<IEnumerable<Resource>> ListAmrResourcesAsync(SubscriptionResource subscriptionResource, CancellationToken cancellationToken)
     {
         var resources = new List<Resource>();
 
@@ -327,9 +319,9 @@ public class RedisService(ISubscriptionService _subscriptionService, ITenantServ
                 PrivateEndpointConnections = resource.PrivateEndpointConnections.Any() ?
                     [.. resource.PrivateEndpointConnections.Select(connection => connection.Id.ToString())]
                     : null,
-                Identity = resource.Identity is null ? null : new ManagedIdentityInfo
+                Identity = resource.Identity is null ? null : new()
                 {
-                    SystemAssignedIdentity = new SystemAssignedIdentityInfo
+                    SystemAssignedIdentity = new()
                     {
                         Enabled = resource.Identity != null,
                         TenantId = resource.Identity?.TenantId?.ToString(),
@@ -344,7 +336,7 @@ public class RedisService(ISubscriptionService _subscriptionService, ITenantServ
                 },
                 Zones = resource.Zones?.Any() == true ? [.. resource.Zones] : null,
                 Tags = resource.Tags.Any() ? resource.Tags : null,
-                Databases = databases.Any() == true ? databases.ToArray() : null
+                Databases = databases?.ToArray()
             });
         }
 
@@ -374,6 +366,10 @@ public class RedisService(ISubscriptionService _subscriptionService, ITenantServ
                 "modules": {
                   "type": "array",
                   "defaultValue": []
+                },
+                "publicNetworkAccess": {
+                  "type": "string",
+                  "defaultValue": "Disabled"
                 }
               },
               "resources": [
@@ -388,7 +384,7 @@ public class RedisService(ISubscriptionService _subscriptionService, ITenantServ
                   "properties": {
                     "highAvailability": "Enabled",
                     "minimumTlsVersion": "1.2",
-                    "publicNetworkAccess": "Enabled"
+                    "publicNetworkAccess": "[parameters('publicNetworkAccess')]"
                   }
                 },
                 {
