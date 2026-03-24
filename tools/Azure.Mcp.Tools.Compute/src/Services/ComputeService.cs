@@ -1078,6 +1078,70 @@ public class ComputeService(
             Tags: vmResource.Data.Tags as IReadOnlyDictionary<string, string>);
     }
 
+    public async Task<bool> DeleteVmAsync(
+        string vmName,
+        string resourceGroup,
+        string subscription,
+        bool? forceDeletion = null,
+        string? tenant = null,
+        RetryPolicyOptions? retryPolicy = null,
+        CancellationToken cancellationToken = default)
+    {
+        var armClient = await CreateArmClientAsync(tenant, retryPolicy, null, cancellationToken);
+        var subscriptionResource = armClient.GetSubscriptionResource(
+            SubscriptionResource.CreateResourceIdentifier(subscription));
+
+        var rgResource = await subscriptionResource.GetResourceGroupAsync(resourceGroup, cancellationToken);
+        var resourceGroupResource = rgResource.Value;
+
+        var vmCollection = resourceGroupResource.GetVirtualMachines();
+
+        try
+        {
+            var vmResponse = await vmCollection.GetAsync(vmName, cancellationToken: cancellationToken);
+            var vmResource = vmResponse.Value;
+            await vmResource.DeleteAsync(WaitUntil.Completed, forceDeletion, cancellationToken);
+            return true;
+        }
+        catch (RequestFailedException ex) when (ex.Status == 404)
+        {
+            _logger.LogDebug(ex, "VM {VmName} not found in resource group {ResourceGroup}", vmName, resourceGroup);
+            return false;
+        }
+    }
+
+    public async Task<bool> DeleteVmssAsync(
+        string vmssName,
+        string resourceGroup,
+        string subscription,
+        bool? forceDeletion = null,
+        string? tenant = null,
+        RetryPolicyOptions? retryPolicy = null,
+        CancellationToken cancellationToken = default)
+    {
+        var armClient = await CreateArmClientAsync(tenant, retryPolicy, null, cancellationToken);
+        var subscriptionResource = armClient.GetSubscriptionResource(
+            SubscriptionResource.CreateResourceIdentifier(subscription));
+
+        var rgResource = await subscriptionResource.GetResourceGroupAsync(resourceGroup, cancellationToken);
+        var resourceGroupResource = rgResource.Value;
+
+        var vmssCollection = resourceGroupResource.GetVirtualMachineScaleSets();
+
+        try
+        {
+            var vmssResponse = await vmssCollection.GetAsync(vmssName, cancellationToken: cancellationToken);
+            var vmssResource = vmssResponse.Value;
+            await vmssResource.DeleteAsync(WaitUntil.Completed, forceDeletion, cancellationToken);
+            return true;
+        }
+        catch (RequestFailedException ex) when (ex.Status == 404)
+        {
+            _logger.LogDebug(ex, "VMSS {VmssName} not found in resource group {ResourceGroup}", vmssName, resourceGroup);
+            return false;
+        }
+    }
+
     private static VirtualMachineScaleSetScaleInRule ParseScaleInPolicy(string scaleInPolicy)
     {
         return scaleInPolicy.ToLowerInvariant() switch
@@ -1285,7 +1349,6 @@ public class ComputeService(
         return ConvertToDiskModel(diskResource.Value, resourceGroup);
     }
 
-    /// <inheritdoc/>
     public async Task<List<DiskInfo>> ListDisksAsync(
         string subscription,
         string? resourceGroup = null,
@@ -1685,5 +1748,40 @@ public class ComputeService(
         {
             SourceResourceId = new Azure.Core.ResourceIdentifier(source)
         };
+    }
+
+    public async Task<bool> DeleteDiskAsync(
+        string diskName,
+        string resourceGroup,
+        string subscription,
+        string? tenant = null,
+        RetryPolicyOptions? retryPolicy = null,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var armClient = await CreateArmClientAsync(tenant, retryPolicy, null, cancellationToken);
+            var subscriptionResource = armClient.GetSubscriptionResource(
+                SubscriptionResource.CreateResourceIdentifier(subscription));
+            var resourceGroupResource = await subscriptionResource.GetResourceGroups().GetAsync(resourceGroup, cancellationToken);
+            var diskResource = await resourceGroupResource.Value.GetManagedDisks().GetAsync(diskName, cancellationToken);
+
+            await diskResource.Value.DeleteAsync(WaitUntil.Completed, cancellationToken);
+
+            _logger.LogInformation(
+                "Successfully deleted disk. Disk: {Disk}, ResourceGroup: {ResourceGroup}",
+                diskName, resourceGroup);
+
+            return true;
+        }
+        catch (RequestFailedException ex) when (ex.Status == 404)
+        {
+            _logger.LogWarning(
+                "Disk not found during delete operation. Disk: {Disk}, ResourceGroup: {ResourceGroup}",
+                diskName, resourceGroup);
+
+            // Return false to indicate the disk was not found (idempotent delete)
+            return false;
+        }
     }
 }

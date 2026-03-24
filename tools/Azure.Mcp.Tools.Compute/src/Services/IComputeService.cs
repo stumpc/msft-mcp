@@ -147,6 +147,25 @@ public interface IComputeService
         RetryPolicyOptions? retryPolicy = null,
         CancellationToken cancellationToken = default);
 
+    // Delete operations
+    Task<bool> DeleteVmAsync(
+        string vmName,
+        string resourceGroup,
+        string subscription,
+        bool? forceDeletion = null,
+        string? tenant = null,
+        RetryPolicyOptions? retryPolicy = null,
+        CancellationToken cancellationToken = default);
+
+    Task<bool> DeleteVmssAsync(
+        string vmssName,
+        string resourceGroup,
+        string subscription,
+        bool? forceDeletion = null,
+        string? tenant = null,
+        RetryPolicyOptions? retryPolicy = null,
+        CancellationToken cancellationToken = default);
+
     // Disk operations
     Task<DiskInfo> GetDiskAsync(
         string diskName,
@@ -209,6 +228,14 @@ public interface IComputeService
         string? encryptionType = null,
         string? diskAccessId = null,
         string? tier = null,
+        string? tenant = null,
+        RetryPolicyOptions? retryPolicy = null,
+        CancellationToken cancellationToken = default);
+
+    Task<bool> DeleteDiskAsync(
+        string diskName,
+        string resourceGroup,
+        string subscription,
         string? tenant = null,
         RetryPolicyOptions? retryPolicy = null,
         CancellationToken cancellationToken = default);

@@ -328,13 +328,6 @@
     <Project Path="tools/Azure.Mcp.Tools.Monitor/tests/Azure.Mcp.Tools.Monitor.LiveTests/Azure.Mcp.Tools.Monitor.LiveTests.csproj" />
     <Project Path="tools/Azure.Mcp.Tools.Monitor/tests/Azure.Mcp.Tools.Monitor.UnitTests/Azure.Mcp.Tools.Monitor.UnitTests.csproj" />
   </Folder>
-  <Folder Name="/tools/Azure.Mcp.Tools.MonitorInstrumentation/" />
-  <Folder Name="/tools/Azure.Mcp.Tools.MonitorInstrumentation/src/">
-    <Project Path="tools/Azure.Mcp.Tools.MonitorInstrumentation/src/Azure.Mcp.Tools.MonitorInstrumentation.csproj" />
-  </Folder>
-  <Folder Name="/tools/Azure.Mcp.Tools.MonitorInstrumentation/tests/">
-    <Project Path="tools/Azure.Mcp.Tools.MonitorInstrumentation/tests/Azure.Mcp.Tools.MonitorInstrumentation.UnitTests/Azure.Mcp.Tools.MonitorInstrumentation.UnitTests.csproj" />
-  </Folder>
   <Folder Name="/tools/Azure.Mcp.Tools.MySql/" />
   <Folder Name="/tools/Azure.Mcp.Tools.MySql/src/">
     <Project Path="tools/Azure.Mcp.Tools.MySql/src/Azure.Mcp.Tools.MySql.csproj" />
@@ -479,11 +472,18 @@
   <Folder Name="/tools/Fabric.Mcp.Tools.OneLake/tests/">
     <Project Path="tools/Fabric.Mcp.Tools.OneLake/tests/Fabric.Mcp.Tools.OneLake.Tests.csproj" />
   </Folder>
-  <Folder Name="/tools/Fabric.Mcp.Tools.PublicApi/" />
-  <Folder Name="/tools/Fabric.Mcp.Tools.PublicApi/src/">
-    <Project Path="tools/Fabric.Mcp.Tools.PublicApi/src/Fabric.Mcp.Tools.PublicApi.csproj" />
+  <Folder Name="/tools/Fabric.Mcp.Tools.Core/" />
+  <Folder Name="/tools/Fabric.Mcp.Tools.Core/src/">
+    <Project Path="tools/Fabric.Mcp.Tools.Core/src/Fabric.Mcp.Tools.Core.csproj" />
   </Folder>
-  <Folder Name="/tools/Fabric.Mcp.Tools.PublicApi/tests/">
-    <Project Path="tools/Fabric.Mcp.Tools.PublicApi/tests/Fabric.Mcp.Tools.PublicApi.UnitTests/Fabric.Mcp.Tools.PublicApi.UnitTests.csproj" />
+  <Folder Name="/tools/Fabric.Mcp.Tools.Core/tests/">
+    <Project Path="tools/Fabric.Mcp.Tools.Core/tests/Fabric.Mcp.Tools.Core.UnitTests.csproj" />
+  </Folder>
+  <Folder Name="/tools/Fabric.Mcp.Tools.Docs/" />
+  <Folder Name="/tools/Fabric.Mcp.Tools.Docs/src/">
+    <Project Path="tools/Fabric.Mcp.Tools.Docs/src/Fabric.Mcp.Tools.Docs.csproj" />
+  </Folder>
+  <Folder Name="/tools/Fabric.Mcp.Tools.Docs/tests/">
+    <Project Path="tools/Fabric.Mcp.Tools.Docs/tests/Fabric.Mcp.Tools.Docs.UnitTests/Fabric.Mcp.Tools.Docs.UnitTests.csproj" />
   </Folder>
 </Solution>

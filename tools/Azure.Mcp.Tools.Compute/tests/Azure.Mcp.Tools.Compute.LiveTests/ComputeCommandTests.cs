@@ -21,7 +21,7 @@ public class ComputeCommandTests(ITestOutputHelper output, TestProxyFixture fixt
     // Disable default sanitizer additions to avoid conflicts (following SQL pattern)
     public override bool EnableDefaultSanitizerAdditions => false;
 
-    // Enable --dangerously-disable-elicitation for commands with Secret = true (vm create)
+    // Enable --dangerously-disable-elicitation for commands with Secret = true (vm create, vm delete, vmss delete)
     public override async ValueTask InitializeAsync()
     {
         SetArguments("server", "start", "--mode", "all", "--dangerously-disable-elicitation");
@@ -512,6 +512,90 @@ public class ComputeCommandTests(ITestOutputHelper output, TestProxyFixture fixt
 
     #endregion
 
+    #region VM Delete Tests
+
+    [Fact]
+    public async Task Should_delete_vm_with_force()
+    {
+        // Create a dedicated VM to delete
+        var deleteVmName = RegisterOrRetrieveVariable("deleteVmName", $"delvm{DateTime.UtcNow:MMddHHmmss}");
+
+        await CallToolAsync(
+            "compute_vm_create",
+            new()
+            {
+                { "subscription", Settings.SubscriptionId },
+                { "resource-group", Settings.ResourceGroupName },
+                { "vm-name", deleteVmName },
+                { "location", "eastus2" },
+                { "admin-username", "azureuser" },
+                { "admin-password", "TestP@ssw0rd123!" },
+                { "image", "Ubuntu2404" },
+                { "no-public-ip", true }
+            });
+
+        // Delete the VM
+        var result = await CallToolAsync(
+            "compute_vm_delete",
+            new()
+            {
+                { "subscription", Settings.SubscriptionId },
+                { "resource-group", Settings.ResourceGroupName },
+                { "vm-name", deleteVmName },
+                { "force-deletion", true }
+            });
+
+        var message = result.AssertProperty("Message");
+        Assert.Contains("successfully deleted", message.GetString());
+
+        var success = result.AssertProperty("Success");
+        Assert.Equal(JsonValueKind.True, success.ValueKind);
+    }
+
+    #endregion
+
+    #region VMSS Delete Tests
+
+    [Fact]
+    public async Task Should_delete_vmss_with_force()
+    {
+        // Create a dedicated VMSS to delete
+        var deleteVmssName = RegisterOrRetrieveVariable("deleteVmssName", $"delvms{DateTime.UtcNow:HHmmss}");
+
+        await CallToolAsync(
+            "compute_vmss_create",
+            new()
+            {
+                { "subscription", Settings.SubscriptionId },
+                { "resource-group", Settings.ResourceGroupName },
+                { "vmss-name", deleteVmssName },
+                { "location", "eastus2" },
+                { "admin-username", "azureuser" },
+                { "admin-password", "TestP@ssw0rd123!" },
+                { "image", "Ubuntu2404" },
+                { "instance-count", 1 }
+            });
+
+        // Delete the VMSS
+        var result = await CallToolAsync(
+            "compute_vmss_delete",
+            new()
+            {
+                { "subscription", Settings.SubscriptionId },
+                { "resource-group", Settings.ResourceGroupName },
+                { "vmss-name", deleteVmssName },
+                { "force-deletion", true }
+            });
+
+        var message = result.AssertProperty("Message");
+        Assert.Contains("successfully deleted", message.GetString());
+
+        var success = result.AssertProperty("Success");
+        Assert.Equal(JsonValueKind.True, success.ValueKind);
+    }
+
+    #endregion
+
     #region Disk Tests
 
     [Fact]
@@ -761,7 +845,8 @@ public class ComputeCommandTests(ITestOutputHelper output, TestProxyFixture fixt
                 { "resource-group", Settings.ResourceGroupName },
                 { "disk-name", newDiskName },
                 { "sku", "Standard_LRS" }
-            });
+            },
+            resultProcessor: elem => elem); // Don't try to extract "results" property since we expect an error response with a different structure
 
         // Assert - should return an error response
         Assert.NotNull(result);
@@ -820,7 +905,7 @@ public class ComputeCommandTests(ITestOutputHelper output, TestProxyFixture fixt
         var galleryImageVersionId = Settings.DeploymentOutputs.GetValueOrDefault("GALLERYIMAGEVERSIONID", "Sanitized");
 
         // Act - create disk from gallery image (OS disk, no LUN)
-        // Use westus2 location to match gallery image replication target region
+        // Use eastus2 location to match gallery image replication target region
         JsonElement? result = await CallToolAsync(
             "compute_disk_create",
             new()
@@ -830,7 +915,7 @@ public class ComputeCommandTests(ITestOutputHelper output, TestProxyFixture fixt
                 { "disk-name", newDiskName },
                 { "gallery-image-reference", galleryImageVersionId },
                 { "sku", "Standard_LRS" },
-                { "location", "westus2" }
+                { "location", "eastus2" }
             });
 
         // Assert
@@ -852,7 +937,7 @@ public class ComputeCommandTests(ITestOutputHelper output, TestProxyFixture fixt
         var galleryImageVersionId = Settings.DeploymentOutputs.GetValueOrDefault("GALLERYIMAGEVERSIONID", "Sanitized");
 
         // Act - create disk from gallery image data disk at LUN 0
-        // Use westus2 location to match gallery image replication target region
+        // Use eastus2 location to match gallery image replication target region
         JsonElement? result = await CallToolAsync(
             "compute_disk_create",
             new()
@@ -863,7 +948,7 @@ public class ComputeCommandTests(ITestOutputHelper output, TestProxyFixture fixt
                 { "gallery-image-reference", galleryImageVersionId },
                 { "gallery-image-reference-lun", 0 },
                 { "sku", "Standard_LRS" },
-                { "location", "westus2" }
+                { "location", "eastus2" }
             });
 
         // Assert
@@ -956,7 +1041,8 @@ public class ComputeCommandTests(ITestOutputHelper output, TestProxyFixture fixt
                 { "disk-name", newDiskName },
                 { "upload-type", "Upload" },
                 { "sku", "Standard_LRS" }
-            });
+            },
+            resultProcessor: elem => elem); // Don't try to extract "results" property since we expect an error response with a different structure
 
         // Assert - should return an error response
         Assert.NotNull(result);
@@ -1162,6 +1248,145 @@ public class ComputeCommandTests(ITestOutputHelper output, TestProxyFixture fixt
         JsonElement verifiedDisk = diskList[0];
         Assert.Equal(128, verifiedDisk.AssertProperty("DiskSizeGB").GetInt32());
         Assert.NotNull(verifiedDisk.AssertProperty("SkuName").GetString()); // SkuName is sanitized during playback
+    }
+
+    #endregion
+
+    #region Disk Delete Tests
+
+    [Fact]
+    public async Task DiskDelete_ExistingDisk_DeletesSuccessfully()
+    {
+        var deleteDiskName = $"{Settings.ResourceBaseName}-del-test";
+
+        await CallToolAsync(
+            "compute_disk_create",
+            new()
+            {
+                { "subscription", Settings.SubscriptionId },
+                { "resource-group", Settings.ResourceGroupName },
+                { "disk-name", deleteDiskName },
+                { "size-gb", 32 },
+                { "sku", "Standard_LRS" }
+            });
+
+        JsonElement? result = await CallToolAsync(
+            "compute_disk_delete",
+            new()
+            {
+                { "subscription", Settings.SubscriptionId },
+                { "resource-group", Settings.ResourceGroupName },
+                { "disk-name", deleteDiskName }
+            });
+
+        Assert.NotNull(result);
+        Assert.True(result.Value.AssertProperty("Deleted").GetBoolean());
+        Assert.NotNull(result.Value.AssertProperty("DiskName").GetString());
+    }
+
+    [Fact]
+    public async Task DiskDelete_NonExistentDisk_ReturnsFalse()
+    {
+        var invalidDiskName = RegisterOrRetrieveVariable("deleteInvalidDiskName", "nonexistent-disk-" + Guid.NewGuid().ToString("N")[..8]);
+
+        // Delete a disk that doesn't exist
+        JsonElement? result = await CallToolAsync(
+            "compute_disk_delete",
+            new()
+            {
+                { "subscription", Settings.SubscriptionId },
+                { "resource-group", Settings.ResourceGroupName },
+                { "disk-name", invalidDiskName }
+            });
+
+        // Idempotent operation should return Deleted = false for non-existent disk
+        Assert.NotNull(result);
+        Assert.False(result.Value.AssertProperty("Deleted").GetBoolean());
+    }
+
+    [Fact]
+    public async Task DiskDelete_ThenGet_ConfirmsDeletion()
+    {
+        var deleteDiskName = $"{Settings.ResourceBaseName}-delget-test";
+
+        await CallToolAsync(
+            "compute_disk_create",
+            new()
+            {
+                { "subscription", Settings.SubscriptionId },
+                { "resource-group", Settings.ResourceGroupName },
+                { "disk-name", deleteDiskName },
+                { "size-gb", 32 },
+                { "sku", "Standard_LRS" }
+            });
+
+        JsonElement? deleteResult = await CallToolAsync(
+            "compute_disk_delete",
+            new()
+            {
+                { "subscription", Settings.SubscriptionId },
+                { "resource-group", Settings.ResourceGroupName },
+                { "disk-name", deleteDiskName }
+            });
+
+        Assert.NotNull(deleteResult);
+        Assert.True(deleteResult.Value.AssertProperty("Deleted").GetBoolean());
+
+        // Verify - attempt to get the deleted disk should return error
+        JsonElement? getResult = await CallToolAsync(
+            "compute_disk_get",
+            new()
+            {
+                { "subscription", Settings.SubscriptionId },
+                { "resource-group", Settings.ResourceGroupName },
+                { "disk-name", deleteDiskName }
+            });
+
+        // The disk should no longer exist - expect error response
+        Assert.NotNull(getResult);
+        Assert.True(getResult.Value.TryGetProperty("message", out _));
+    }
+
+    [Fact]
+    public async Task DiskDelete_IdempotentDoubleDelete_SucceedsBothTimes()
+    {
+        var deleteDiskName = $"{Settings.ResourceBaseName}-deldbl-test";
+
+        await CallToolAsync(
+            "compute_disk_create",
+            new()
+            {
+                { "subscription", Settings.SubscriptionId },
+                { "resource-group", Settings.ResourceGroupName },
+                { "disk-name", deleteDiskName },
+                { "size-gb", 32 },
+                { "sku", "Standard_LRS" }
+            });
+
+        JsonElement? firstResult = await CallToolAsync(
+            "compute_disk_delete",
+            new()
+            {
+                { "subscription", Settings.SubscriptionId },
+                { "resource-group", Settings.ResourceGroupName },
+                { "disk-name", deleteDiskName }
+            });
+
+        JsonElement? secondResult = await CallToolAsync(
+            "compute_disk_delete",
+            new()
+            {
+                { "subscription", Settings.SubscriptionId },
+                { "resource-group", Settings.ResourceGroupName },
+                { "disk-name", deleteDiskName }
+            });
+
+        // First delete should succeed, second should return false (already deleted)
+        Assert.NotNull(firstResult);
+        Assert.True(firstResult.Value.AssertProperty("Deleted").GetBoolean());
+
+        Assert.NotNull(secondResult);
+        Assert.False(secondResult.Value.AssertProperty("Deleted").GetBoolean());
     }
 
     #endregion
