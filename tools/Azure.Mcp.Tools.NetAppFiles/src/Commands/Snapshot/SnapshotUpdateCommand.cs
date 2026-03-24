@@ -20,6 +20,7 @@ namespace Azure.Mcp.Tools.NetAppFiles.Commands.Snapshot;
 public sealed class SnapshotUpdateCommand(ILogger<SnapshotUpdateCommand> logger) : SubscriptionCommand<SnapshotUpdateOptions>()
 {
     private const string CommandTitle = "Update NetApp Files Snapshot";
+
     private readonly ILogger<SnapshotUpdateCommand> _logger = logger;
 
     public override string Id => "c6e9f3a1-7d4b-4c8e-b2a5-f1d8e6b4c9a3";

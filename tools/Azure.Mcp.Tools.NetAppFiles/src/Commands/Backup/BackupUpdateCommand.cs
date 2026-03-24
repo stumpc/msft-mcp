@@ -20,6 +20,7 @@ namespace Azure.Mcp.Tools.NetAppFiles.Commands.Backup;
 public sealed class BackupUpdateCommand(ILogger<BackupUpdateCommand> logger) : SubscriptionCommand<BackupUpdateOptions>()
 {
     private const string CommandTitle = "Update NetApp Files Backup";
+
     private readonly ILogger<BackupUpdateCommand> _logger = logger;
 
     public override string Id => "e7b3a1d5-9c4f-4e8a-b2d6-f1a5c3e7d9b4";

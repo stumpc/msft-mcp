@@ -21,6 +21,7 @@ namespace Azure.Mcp.Tools.NetAppFiles.Commands.Account;
 public sealed class AccountUpdateCommand(ILogger<AccountUpdateCommand> logger) : SubscriptionCommand<AccountUpdateOptions>()
 {
     private const string CommandTitle = "Update NetApp Files Account";
+
     private readonly ILogger<AccountUpdateCommand> _logger = logger;
 
     public override string Id => "a3c7d1e5-8b2f-4f6a-9e0d-c5b4a7f2e8d1";

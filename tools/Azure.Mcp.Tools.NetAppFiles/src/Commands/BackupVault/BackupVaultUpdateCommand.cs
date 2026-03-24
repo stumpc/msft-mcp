@@ -21,6 +21,7 @@ namespace Azure.Mcp.Tools.NetAppFiles.Commands.BackupVault;
 public sealed class BackupVaultUpdateCommand(ILogger<BackupVaultUpdateCommand> logger) : SubscriptionCommand<BackupVaultUpdateOptions>()
 {
     private const string CommandTitle = "Update NetApp Files Backup Vault";
+
     private readonly ILogger<BackupVaultUpdateCommand> _logger = logger;
 
     public override string Id => "c4e6f8a0-2d5b-4c9e-a3f7-b8d0e2f4a6c8";

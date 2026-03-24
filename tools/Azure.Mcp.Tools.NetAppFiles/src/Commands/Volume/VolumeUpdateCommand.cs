@@ -21,6 +21,7 @@ namespace Azure.Mcp.Tools.NetAppFiles.Commands.Volume;
 public sealed class VolumeUpdateCommand(ILogger<VolumeUpdateCommand> logger) : SubscriptionCommand<VolumeUpdateOptions>()
 {
     private const string CommandTitle = "Update NetApp Files Volume";
+
     private readonly ILogger<VolumeUpdateCommand> _logger = logger;
 
     public override string Id => "f1a3b5c7-9d2e-4f8a-b6c0-e4d7a2f9c3b5";
