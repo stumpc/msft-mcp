@@ -645,6 +645,8 @@ This file contains prompts used for end-to-end testing to ensure each tool is in
 | azmcp-netappfiles-volume-get | Get details of volume <volume_name> in pool <pool_name> for NetApp Files account <account_name> in subscription <subscription_name> |
 | azmcp-netappfiles-volume-create | Create a new NetApp Files volume <volume_name> in pool <pool_name> for account <account_name> in resource group <resource_group> in subscription <subscription_name> with location eastus, creation token <volume_name>, usage threshold 107374182400 bytes, and subnet <subnet_id> |
 | azmcp-netappfiles-volume-create | Create a Premium tier NetApp Files volume <volume_name> with NFSv4.1 protocol in pool <pool_name> for account <account_name> in resource group <resource_group> in subscription <subscription_name> |
+| azmcp-netappfiles-volume-get | List all NetApp Files volumes in my subscription <subscription_name> |
+| azmcp-netappfiles-volume-get | Get details of volume <volume_name> in pool <pool_name> for NetApp Files account <account_name> in subscription <subscription_name> |
 | azmcp-netappfiles-volumegroup-get | List all NetApp Files volume groups in my subscription <subscription_name> |
 | azmcp-netappfiles-volumegroup-get | Get details of volume group <volume_group_name> for NetApp Files account <account_name> in subscription <subscription_name> |
 
