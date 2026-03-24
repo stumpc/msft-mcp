@@ -20,6 +20,7 @@ namespace Azure.Mcp.Tools.NetAppFiles.Commands.BackupVault;
 public sealed class BackupVaultCreateCommand(ILogger<BackupVaultCreateCommand> logger) : SubscriptionCommand<BackupVaultCreateOptions>()
 {
     private const string CommandTitle = "Create NetApp Files Backup Vault";
+
     private readonly ILogger<BackupVaultCreateCommand> _logger = logger;
 
     public override string Id => "b2d4f6a8-0c1e-4b7d-9f3a-e5c7d9b1a3f5";

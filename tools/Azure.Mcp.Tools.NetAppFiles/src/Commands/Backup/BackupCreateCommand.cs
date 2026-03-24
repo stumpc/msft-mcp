@@ -20,6 +20,7 @@ namespace Azure.Mcp.Tools.NetAppFiles.Commands.Backup;
 public sealed class BackupCreateCommand(ILogger<BackupCreateCommand> logger) : SubscriptionCommand<BackupCreateOptions>()
 {
     private const string CommandTitle = "Create NetApp Files Backup";
+
     private readonly ILogger<BackupCreateCommand> _logger = logger;
 
     public override string Id => "a3d7e1f9-5b2c-4a8d-9e6f-c0d4b8a2f7e3";

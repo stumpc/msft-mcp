@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using System.Text.Json.Serialization;
 using Azure.Mcp.Core.Commands.Subscription;
 using Azure.Mcp.Core.Extensions;
 using Azure.Mcp.Tools.NetAppFiles.Models;
@@ -18,6 +17,7 @@ namespace Azure.Mcp.Tools.NetAppFiles.Commands.SnapshotPolicy;
 public sealed class SnapshotPolicyGetCommand(ILogger<SnapshotPolicyGetCommand> logger) : SubscriptionCommand<SnapshotPolicyGetOptions>()
 {
     private const string CommandTitle = "Get NetApp Files Snapshot Policy Details";
+
     private readonly ILogger<SnapshotPolicyGetCommand> _logger = logger;
 
     public override string Id => "a3c7e1d9-5f2b-4a8e-b6c4-d9e0f1a2b3c4";

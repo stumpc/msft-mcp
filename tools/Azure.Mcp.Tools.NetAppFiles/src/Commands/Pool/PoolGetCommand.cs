@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using System.Text.Json.Serialization;
 using Azure.Mcp.Core.Commands.Subscription;
 using Azure.Mcp.Core.Extensions;
 using Azure.Mcp.Tools.NetAppFiles.Models;
@@ -18,6 +17,7 @@ namespace Azure.Mcp.Tools.NetAppFiles.Commands.Pool;
 public sealed class PoolGetCommand(ILogger<PoolGetCommand> logger) : SubscriptionCommand<PoolGetOptions>()
 {
     private const string CommandTitle = "Get NetApp Files Capacity Pool Details";
+
     private readonly ILogger<PoolGetCommand> _logger = logger;
 
     public override string Id => "a3c7e1d9-5f2b-4a8e-b6c4-d9e2f7a1b3c5";

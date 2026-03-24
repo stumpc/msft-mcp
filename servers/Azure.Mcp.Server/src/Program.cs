@@ -17,10 +17,14 @@ using Microsoft.Extensions.Options;
 using Microsoft.Mcp.Core.Areas;
 using Microsoft.Mcp.Core.Areas.Server;
 using Microsoft.Mcp.Core.Areas.Server.Commands;
+using Microsoft.Mcp.Core.Areas.Server.Commands.Discovery;
+using Microsoft.Mcp.Core.Areas.Server.Commands.ToolLoading;
 using Microsoft.Mcp.Core.Areas.Server.Options;
 using Microsoft.Mcp.Core.Commands;
 using Microsoft.Mcp.Core.Models.Command;
 using Microsoft.Mcp.Core.Services.Telemetry;
+
+namespace Azure.Mcp.Server;
 
 internal class Program
 {
@@ -40,6 +44,9 @@ internal class Program
 
             ServiceStartCommand.ConfigureServices = ConfigureServices;
             ServiceStartCommand.InitializeServicesAsync = InitializeServicesAsync;
+
+            PluginTelemetryCommand.ConfigureServices = ConfigureServices;
+            PluginTelemetryCommand.InitializeServicesAsync = InitializeServicesAsync;
 
             ServiceCollection services = new();
 
@@ -100,6 +107,7 @@ internal class Program
             new Azure.Mcp.Tools.AzureMigrate.AzureMigrateSetup(),
             new Azure.Mcp.Tools.AzureTerraformBestPractices.AzureTerraformBestPracticesSetup(),
             new Azure.Mcp.Tools.Deploy.DeploySetup(),
+            new Azure.Mcp.Tools.DeviceRegistry.DeviceRegistrySetup(),
             new Azure.Mcp.Tools.EventGrid.EventGridSetup(),
             new Azure.Mcp.Tools.Acr.AcrSetup(),
             new Azure.Mcp.Tools.Advisor.AdvisorSetup(),
@@ -109,10 +117,12 @@ internal class Program
             new Azure.Mcp.Tools.Communication.CommunicationSetup(),
             new Azure.Mcp.Tools.Compute.ComputeSetup(),
             new Azure.Mcp.Tools.ConfidentialLedger.ConfidentialLedgerSetup(),
+            new Azure.Mcp.Tools.ContainerApps.ContainerAppsSetup(),
             new Azure.Mcp.Tools.EventHubs.EventHubsSetup(),
             new Azure.Mcp.Tools.FileShares.FileSharesSetup(),
-            new Azure.Mcp.Tools.Foundry.FoundrySetup(),
+            new Azure.Mcp.Tools.FoundryExtensions.FoundryExtensionsSetup(),
             new Azure.Mcp.Tools.FunctionApp.FunctionAppSetup(),
+            new Azure.Mcp.Tools.Functions.FunctionsSetup(),
             new Azure.Mcp.Tools.Grafana.GrafanaSetup(),
             new Azure.Mcp.Tools.KeyVault.KeyVaultSetup(),
             new Azure.Mcp.Tools.Kusto.KustoSetup(),
@@ -137,6 +147,7 @@ internal class Program
             new Azure.Mcp.Tools.Storage.StorageSetup(),
             new Azure.Mcp.Tools.StorageSync.StorageSyncSetup(),
             new Azure.Mcp.Tools.VirtualDesktop.VirtualDesktopSetup(),
+            new Azure.Mcp.Tools.WellArchitectedFramework.WellArchitectedFrameworkSetup(),
             new Azure.Mcp.Tools.Workbooks.WorkbooksSetup(),
 #if !BUILD_NATIVE
             // IMPORTANT: DO NOT MODIFY OR ADD EXCLUSIONS IN THIS SECTION
@@ -207,6 +218,8 @@ internal class Program
     /// <param name="services">A service collection.</param>
     internal static void ConfigureServices(IServiceCollection services)
     {
+        var thisAssembly = typeof(Program).Assembly;
+
         services.InitializeConfigurationAndOptions();
         services.ConfigureOpenTelemetry();
 
@@ -231,7 +244,19 @@ internal class Program
             area.ConfigureServices(services);
         }
 
-        services.AddRegistryRoot();
+        services.AddRegistryRoot(thisAssembly, $"registry.json");
+
+        services.AddSingleton<IServerInstructionsProvider>(
+            new ResourceServerInstructionsProvider(thisAssembly, $"azure-rules.txt"));
+
+        services.AddSingleton<IConsolidatedToolDefinitionProvider>(sp =>
+            ActivatorUtilities.CreateInstance<ResourceConsolidatedToolDefinitionProvider>(sp, thisAssembly, $"consolidated-tools.json"));
+
+        services.AddSingleton<IPluginFileReferenceAllowlistProvider>(sp =>
+            ActivatorUtilities.CreateInstance<ResourcePluginFileReferenceAllowlistProvider>(sp, thisAssembly, $"allowed-plugin-file-references.json"));
+
+        services.AddSingleton<IPluginSkillNameAllowlistProvider>(sp =>
+            ActivatorUtilities.CreateInstance<ResourcePluginSkillNameAllowlistProvider>(sp, thisAssembly, $"allowed-skill-names.json"));
     }
 
     internal static async Task InitializeServicesAsync(IServiceProvider serviceProvider)

@@ -20,6 +20,7 @@ namespace Azure.Mcp.Tools.NetAppFiles.Commands.Volume;
 public sealed class VolumeCreateCommand(ILogger<VolumeCreateCommand> logger) : SubscriptionCommand<VolumeCreateOptions>()
 {
     private const string CommandTitle = "Create NetApp Files Volume";
+
     private readonly ILogger<VolumeCreateCommand> _logger = logger;
 
     public override string Id => "d7e2f4a8-3b1c-4d5e-a9f6-c2e8b7d4a1f3";

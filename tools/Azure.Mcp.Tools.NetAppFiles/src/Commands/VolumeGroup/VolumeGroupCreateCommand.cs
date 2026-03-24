@@ -20,6 +20,7 @@ namespace Azure.Mcp.Tools.NetAppFiles.Commands.VolumeGroup;
 public sealed class VolumeGroupCreateCommand(ILogger<VolumeGroupCreateCommand> logger) : SubscriptionCommand<VolumeGroupCreateOptions>()
 {
     private const string CommandTitle = "Create NetApp Files Volume Group";
+
     private readonly ILogger<VolumeGroupCreateCommand> _logger = logger;
 
     public override string Id => "c9f4d3a7-1e6b-4c8d-b2a5-e7f1d8c6a3b9";
