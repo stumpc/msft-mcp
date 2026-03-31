@@ -2779,6 +2779,43 @@ azmcp netappfiles account get --subscription <subscription>
 azmcp netappfiles account get --subscription <subscription> --account <account>
 ```
 
+```bash
+# Update an existing NetApp Files account (supports updating tags)
+# ✅ Destructive | ✅ Idempotent | ❌ OpenWorld | ❌ ReadOnly | ❌ Secret | ❌ LocalRequired
+azmcp netappfiles account update --subscription <subscription> \
+                                 --resource-group <resource-group> \
+                                 --account <account> \
+                                 --location <location>
+azmcp netappfiles account update --subscription <subscription> \
+                                 --resource-group <resource-group> \
+                                 --account <account> \
+                                 --location <location> \
+                                 --tags '{"key1":"value1","key2":"value2"}'
+```
+
+#### Backup Operations
+
+```bash
+# Create a new NetApp Files backup in a specified backup vault under a NetApp account
+# ✅ Destructive | ❌ Idempotent | ❌ OpenWorld | ❌ ReadOnly | ❌ Secret | ❌ LocalRequired
+azmcp netappfiles backup create --account <account> --backupVault <backup-vault> --backup <backup> --resource-group <resource-group> --location <location> --volumeResourceId <volume-resource-id> --subscription <subscription>
+azmcp netappfiles backup create --account <account> --backupVault <backup-vault> --backup <backup> --resource-group <resource-group> --location <location> --volumeResourceId <volume-resource-id> --subscription <subscription> --label <label>
+
+# Update an existing NetApp Files backup in a specified backup vault under a NetApp account
+# ✅ Destructive | ✅ Idempotent | ❌ OpenWorld | ❌ ReadOnly | ❌ Secret | ❌ LocalRequired
+azmcp netappfiles backup update --account <account> --backupVault <backup-vault> --backup <backup> --resource-group <resource-group> --location <location> --subscription <subscription>
+azmcp netappfiles backup update --account <account> --backupVault <backup-vault> --backup <backup> --resource-group <resource-group> --location <location> --subscription <subscription> --label <label>
+```
+
+#### Backup Policy Operations
+
+```bash
+# Create a new NetApp Files backup policy in a specified account and resource group
+# ✅ Destructive | ❌ Idempotent | ❌ OpenWorld | ❌ ReadOnly | ❌ Secret | ❌ LocalRequired
+azmcp netappfiles backuppolicy create --account <account> --backupPolicy <backup-policy> --resource-group <resource-group> --location <location> --subscription <subscription>
+azmcp netappfiles backuppolicy create --account <account> --backupPolicy <backup-policy> --resource-group <resource-group> --location <location> --subscription <subscription> --dailyBackupsToKeep <daily> --weeklyBackupsToKeep <weekly> --monthlyBackupsToKeep <monthly>
+```
+
 #### Backup Policy Operations
 
 ```bash
