@@ -2779,15 +2779,15 @@ azmcp netappfiles account create --subscription <subscription> \
                                  --resource-group <resource-group> \
                                  --account <account> \
                                  --location <location>
-```
 
-```bash
+
 # Get details for all NetApp Files accounts in a subscription, or a specific account
 # ❌ Destructive | ✅ Idempotent | ❌ OpenWorld | ✅ ReadOnly | ❌ Secret | ❌ LocalRequired
 azmcp netappfiles account get --subscription <subscription>
 azmcp netappfiles account get --subscription <subscription> --account <account>
 ```
 
+<<<<<<< HEAD
 ```bash
 # Update an existing NetApp Files account (supports updating tags)
 # ✅ Destructive | ✅ Idempotent | ❌ OpenWorld | ❌ ReadOnly | ❌ Secret | ❌ LocalRequired
@@ -2801,6 +2801,8 @@ azmcp netappfiles account update --subscription <subscription> \
                                  --location <location> \
                                  --tags '{"key1":"value1","key2":"value2"}'
 ```
+=======
+>>>>>>> stumpc/anf-create
 
 #### Backup Operations
 
@@ -2823,7 +2825,11 @@ azmcp netappfiles backup update --account <account> --backupVault <backup-vault>
 # ✅ Destructive | ❌ Idempotent | ❌ OpenWorld | ❌ ReadOnly | ❌ Secret | ❌ LocalRequired
 azmcp netappfiles backuppolicy create --account <account> --backupPolicy <backup-policy> --resource-group <resource-group> --location <location> --subscription <subscription>
 azmcp netappfiles backuppolicy create --account <account> --backupPolicy <backup-policy> --resource-group <resource-group> --location <location> --subscription <subscription> --dailyBackupsToKeep <daily> --weeklyBackupsToKeep <weekly> --monthlyBackupsToKeep <monthly>
+```
 
+#### Backup Policy Operations
+
+```bash
 # Get details for all NetApp Files backup policies in a subscription, or filter by account and/or backup policy name
 # ❌ Destructive | ✅ Idempotent | ❌ OpenWorld | ✅ ReadOnly | ❌ Secret | ❌ LocalRequired
 azmcp netappfiles backuppolicy get --subscription <subscription>
@@ -2863,6 +2869,7 @@ azmcp netappfiles backupvault update --account <account> --backupVault <backup-v
 azmcp netappfiles pool get --subscription <subscription>
 azmcp netappfiles pool get --subscription <subscription> --account <account>
 azmcp netappfiles pool get --subscription <subscription> --account <account> --pool <pool>
+
 
 # Create an Azure NetApp Files capacity pool in a specified account
 # ✅ Destructive | ❌ Idempotent | ❌ OpenWorld | ❌ ReadOnly | ❌ Secret | ❌ LocalRequired

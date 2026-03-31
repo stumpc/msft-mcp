@@ -664,6 +664,8 @@ This file contains prompts used for end-to-end testing to ensure each tool is in
 | azmcp-netappfiles-volume-get | Get details of volume <volume_name> in pool <pool_name> for NetApp Files account <account_name> in subscription <subscription_name> |
 | azmcp-netappfiles-volume-create | Create a new NetApp Files volume <volume_name> in pool <pool_name> for account <account_name> in resource group <resource_group> in subscription <subscription_name> with location eastus, creation token <volume_name>, usage threshold 107374182400 bytes, and subnet <subnet_id> |
 | azmcp-netappfiles-volume-create | Create a Premium tier NetApp Files volume <volume_name> with NFSv4.1 protocol in pool <pool_name> for account <account_name> in resource group <resource_group> in subscription <subscription_name> |
+| azmcp-netappfiles-volume-get | List all NetApp Files volumes in my subscription <subscription_name> |
+| azmcp-netappfiles-volume-get | Get details of volume <volume_name> in pool <pool_name> for NetApp Files account <account_name> in subscription <subscription_name> |
 | azmcp-netappfiles-volumegroup-get | List all NetApp Files volume groups in my subscription <subscription_name> |
 | azmcp-netappfiles-volumegroup-get | Get details of volume group <volume_group_name> for NetApp Files account <account_name> in subscription <subscription_name> |
 | azmcp-netappfiles-volumegroup-create | Create a new NetApp Files volume group <volume_group_name> for account <account_name> in resource group <resource_group> in subscription <subscription_name> with location eastus, application type SAP-HANA, and application identifier SH1 |
@@ -959,8 +961,6 @@ This file contains prompts used for end-to-end testing to ensure each tool is in
 | storage_account_get | Show me my storage accounts with whether hierarchical namespace (HNS) is enabled |
 | storage_account_get | Show me the storage accounts in my subscription and include HTTPS-only and public blob access settings |
 | storage_blob_container_create | Create the storage container mycontainer in storage account <account> |
-| storage_blob_container_create | Create the container using blob public access in storage account <account> |
-| storage_blob_container_create | Create a new blob container named documents with container public access in storage account <account> |
 | storage_blob_container_get | Show me the properties of the storage container <container> in the storage account <account> |
 | storage_blob_container_get | List all blob containers in the storage account <account> |
 | storage_blob_container_get | Show me the containers in the storage account <account> |
