@@ -2695,6 +2695,48 @@ azmcp netappfiles account update --account <account> \
                                  [--nfs-v4-id-domain <nfs-v4-id-domain>] \
                                  [--tenant <tenant>]
 
+# Approves a replication connection on a source Azure NetApp Files volume.
+# Returns whether the replication connection was approved.
+# ✅ Destructive | ✅ Idempotent | ❌ OpenWorld | ❌ ReadOnly | ❌ Secret | ❌ LocalRequired
+azmcp netappfiles replication approve --account <account> \
+                                      --pool <pool> \
+                                      --volume <volume> \
+                                      --remote-volume-resource-id <remote-volume-resource-id> \
+                                      --resource-group <resource-group> \
+                                      --subscription <subscription> \
+                                      [--tenant <tenant>]
+
+# Resumes a suspended replication connection on a destination Azure NetApp Files volume.
+# Returns whether replication was resumed.
+# ✅ Destructive | ✅ Idempotent | ❌ OpenWorld | ❌ ReadOnly | ❌ Secret | ❌ LocalRequired
+azmcp netappfiles replication resume --account <account> \
+                                     --pool <pool> \
+                                     --volume <volume> \
+                                     --resource-group <resource-group> \
+                                     --subscription <subscription> \
+                                     [--tenant <tenant>]
+
+# Gets the replication status for an Azure NetApp Files volume.
+# Returns replication health, relationship status, mirror state, progress, and any replication error message.
+# ❌ Destructive | ✅ Idempotent | ❌ OpenWorld | ✅ ReadOnly | ❌ Secret | ❌ LocalRequired
+azmcp netappfiles replication status --account <account> \
+                                     --pool <pool> \
+                                     --volume <volume> \
+                                     --resource-group <resource-group> \
+                                     --subscription <subscription> \
+                                     [--tenant <tenant>]
+
+# Suspends the replication connection on a destination Azure NetApp Files volume.
+# Optionally forces suspension while replication is transferring data. Returns whether replication was suspended.
+# ✅ Destructive | ✅ Idempotent | ❌ OpenWorld | ❌ ReadOnly | ❌ Secret | ❌ LocalRequired
+azmcp netappfiles replication suspend --account <account> \
+                                      --pool <pool> \
+                                      --volume <volume> \
+                                      --resource-group <resource-group> \
+                                      --subscription <subscription> \
+                                      [--force-break-replication] \
+                                      [--tenant <tenant>]
+
 # Creates a snapshot of an Azure NetApp Files volume.
 # Returns the snapshot name, resource ID, location, provisioning state, snapshot ID, and creation time.
 # ✅ Destructive | ✅ Idempotent | ❌ OpenWorld | ❌ ReadOnly | ❌ Secret | ❌ LocalRequired

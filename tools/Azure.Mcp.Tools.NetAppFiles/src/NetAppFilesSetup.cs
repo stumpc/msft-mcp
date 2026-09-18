@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using Azure.Mcp.Tools.NetAppFiles.Commands.Account;
+using Azure.Mcp.Tools.NetAppFiles.Commands.Replication;
 using Azure.Mcp.Tools.NetAppFiles.Commands.Snapshot;
 using Azure.Mcp.Tools.NetAppFiles.Commands.Volume;
 using Azure.Mcp.Tools.NetAppFiles.Services;
@@ -20,11 +21,16 @@ public class NetAppFilesSetup : IAreaSetup
     public void ConfigureServices(IServiceCollection services)
     {
         services.AddSingleton<INetAppFilesAccountService, NetAppFilesAccountService>();
+        services.AddSingleton<INetAppFilesReplicationService, NetAppFilesReplicationService>();
         services.AddSingleton<INetAppFilesSnapshotService, NetAppFilesSnapshotService>();
         services.AddSingleton<INetAppFilesVolumeService, NetAppFilesVolumeService>();
         services.AddSingleton<AccountCreateCommand>();
         services.AddSingleton<AccountGetCommand>();
         services.AddSingleton<AccountUpdateCommand>();
+        services.AddSingleton<ReplicationApproveCommand>();
+        services.AddSingleton<ReplicationResumeCommand>();
+        services.AddSingleton<ReplicationStatusCommand>();
+        services.AddSingleton<ReplicationSuspendCommand>();
         services.AddSingleton<SnapshotCreateCommand>();
         services.AddSingleton<SnapshotGetCommand>();
         services.AddSingleton<SnapshotUpdateCommand>();
@@ -45,6 +51,13 @@ public class NetAppFilesSetup : IAreaSetup
         account.AddCommand<AccountCreateCommand>(serviceProvider);
         account.AddCommand<AccountGetCommand>(serviceProvider);
         account.AddCommand<AccountUpdateCommand>(serviceProvider);
+
+        var replication = new CommandGroup("replication", "Azure NetApp Files volume replication operations.");
+        root.AddSubGroup(replication);
+        replication.AddCommand<ReplicationApproveCommand>(serviceProvider);
+        replication.AddCommand<ReplicationResumeCommand>(serviceProvider);
+        replication.AddCommand<ReplicationStatusCommand>(serviceProvider);
+        replication.AddCommand<ReplicationSuspendCommand>(serviceProvider);
 
         var snapshot = new CommandGroup("snapshot", "Azure NetApp Files snapshot operations.");
         root.AddSubGroup(snapshot);

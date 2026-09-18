@@ -1,0 +1,3 @@
+changes:
+  - section: Features Added
+    description: Added `netappfiles replication approve`, `netappfiles replication resume`, `netappfiles replication status`, and `netappfiles replication suspend` commands for approving Azure NetApp Files volume replication connections, resuming or suspending replication on destination volumes, and retrieving replication health and state.

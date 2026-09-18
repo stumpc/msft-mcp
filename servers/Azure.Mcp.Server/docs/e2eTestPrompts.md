@@ -610,6 +610,14 @@ The `Interaction` column describes whether a prompt can invoke its tool immediat
 | netappfiles_account_get | Show me details for NetApp Files account \<account> in resource group \<resource_group> | none |
 | netappfiles_account_update | Set the tags on Azure NetApp Files account \<account> in resource group \<resource_group> to {"environment":"production"} | none |
 | netappfiles_account_update | Update the NFSv4 ID mapping domain for NetApp Files account \<account> in resource group \<resource_group> to example.com | none |
+| netappfiles_replication_approve | Approve the Azure NetApp Files replication connection from remote volume \<remote_volume_resource_id> on source volume \<volume> in capacity pool \<pool> under account \<account> | none |
+| netappfiles_replication_approve | Authorize NetApp Files volume \<remote_volume_resource_id> to replicate with source volume \<volume> in pool \<pool> | none |
+| netappfiles_replication_resume | Resume the suspended replication connection on destination Azure NetApp Files volume \<volume> in capacity pool \<pool> under account \<account> | none |
+| netappfiles_replication_resume | Resynchronize destination NetApp Files volume \<volume> in pool \<pool> after replication was suspended | none |
+| netappfiles_replication_status | Get the replication status for Azure NetApp Files volume \<volume> in capacity pool \<pool> under account \<account> | none |
+| netappfiles_replication_status | Show the replication health and mirror state for NetApp Files volume \<volume> in pool \<pool> | none |
+| netappfiles_replication_suspend | Suspend replication on destination Azure NetApp Files volume \<volume> in capacity pool \<pool> under account \<account> | none |
+| netappfiles_replication_suspend | Force suspension of the replication connection on destination NetApp Files volume \<volume> in pool \<pool> while data is transferring | none |
 | netappfiles_snapshot_create | Create a snapshot named \<snapshot> of Azure NetApp Files volume \<volume> in capacity pool \<pool> under account \<account> | none |
 | netappfiles_snapshot_create | Take a snapshot called \<snapshot> of NetApp Files volume \<volume> in pool \<pool> | none |
 | netappfiles_snapshot_get | Get snapshot \<snapshot> from Azure NetApp Files volume \<volume> in capacity pool \<pool> under account \<account> | none |

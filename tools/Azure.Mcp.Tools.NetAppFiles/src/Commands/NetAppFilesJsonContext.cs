@@ -3,6 +3,7 @@
 
 using System.Text.Json.Serialization;
 using Azure.Mcp.Tools.NetAppFiles.Commands.Account;
+using Azure.Mcp.Tools.NetAppFiles.Commands.Replication;
 using Azure.Mcp.Tools.NetAppFiles.Commands.Snapshot;
 using Azure.Mcp.Tools.NetAppFiles.Commands.Volume;
 using Azure.Mcp.Tools.NetAppFiles.Models;
@@ -14,8 +15,13 @@ namespace Azure.Mcp.Tools.NetAppFiles.Commands;
 [JsonSerializable(typeof(AccountUpdateCommand.AccountUpdateResult))]
 [JsonSerializable(typeof(Dictionary<string, string>))]
 [JsonSerializable(typeof(NetAppFilesAccount))]
+[JsonSerializable(typeof(NetAppFilesReplicationStatus))]
 [JsonSerializable(typeof(NetAppFilesSnapshot))]
 [JsonSerializable(typeof(NetAppFilesVolume))]
+[JsonSerializable(typeof(ReplicationApproveCommand.ReplicationApproveResult))]
+[JsonSerializable(typeof(ReplicationResumeCommand.ReplicationResumeResult))]
+[JsonSerializable(typeof(ReplicationStatusCommand.ReplicationStatusResult))]
+[JsonSerializable(typeof(ReplicationSuspendCommand.ReplicationSuspendResult))]
 [JsonSerializable(typeof(SnapshotCreateCommand.SnapshotCreateResult))]
 [JsonSerializable(typeof(SnapshotGetCommand.SnapshotGetResult))]
 [JsonSerializable(typeof(SnapshotUpdateCommand.SnapshotUpdateResult))]

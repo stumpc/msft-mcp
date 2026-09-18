@@ -102,6 +102,85 @@ public class NetAppFilesCommandTests(
         Assert.Equal("Succeeded", account.AssertProperty("provisioningState").GetString());
     }
 
+    [Fact(Skip = "Requires a pre-provisioned cross-region replication relationship and recorded session.")]
+    public async Task ReplicationApprove_ReturnsApproval()
+    {
+        var result = await CallToolAsync(
+            "netappfiles_replication_approve",
+            new()
+            {
+                { "account", Settings.DeploymentOutputs["NETAPP_REPLICATION_ACCOUNT_NAME"] },
+                { "pool", Settings.DeploymentOutputs["NETAPP_REPLICATION_POOL_NAME"] },
+                { "volume", Settings.DeploymentOutputs["NETAPP_REPLICATION_VOLUME_NAME"] },
+                { "remote-volume-resource-id", Settings.DeploymentOutputs["NETAPP_REPLICATION_REMOTE_VOLUME_RESOURCE_ID"] },
+                { "resource-group", Settings.ResourceGroupName },
+                { "subscription", Settings.SubscriptionId },
+                { "tenant", Settings.TenantId }
+            });
+
+        Assert.True(result.AssertProperty("approved").GetBoolean());
+    }
+
+    [Fact(Skip = "Requires a pre-provisioned suspended cross-region replication relationship and recorded session.")]
+    public async Task ReplicationResume_ReturnsResumed()
+    {
+        var result = await CallToolAsync(
+            "netappfiles_replication_resume",
+            new()
+            {
+                { "account", Settings.DeploymentOutputs["NETAPP_REPLICATION_ACCOUNT_NAME"] },
+                { "pool", Settings.DeploymentOutputs["NETAPP_REPLICATION_POOL_NAME"] },
+                { "volume", Settings.DeploymentOutputs["NETAPP_REPLICATION_VOLUME_NAME"] },
+                { "resource-group", Settings.ResourceGroupName },
+                { "subscription", Settings.SubscriptionId },
+                { "tenant", Settings.TenantId }
+            });
+
+        Assert.True(result.AssertProperty("resumed").GetBoolean());
+    }
+
+    [Fact(Skip = "Requires a pre-provisioned cross-region replication relationship and recorded session.")]
+    public async Task ReplicationStatus_ReturnsStatus()
+    {
+        var result = await CallToolAsync(
+            "netappfiles_replication_status",
+            new()
+            {
+                { "account", Settings.DeploymentOutputs["NETAPP_REPLICATION_ACCOUNT_NAME"] },
+                { "pool", Settings.DeploymentOutputs["NETAPP_REPLICATION_POOL_NAME"] },
+                { "volume", Settings.DeploymentOutputs["NETAPP_REPLICATION_VOLUME_NAME"] },
+                { "resource-group", Settings.ResourceGroupName },
+                { "subscription", Settings.SubscriptionId },
+                { "tenant", Settings.TenantId }
+            });
+
+        var replicationStatus = result.AssertProperty("replicationStatus");
+        Assert.Equal(JsonValueKind.Object, replicationStatus.ValueKind);
+        replicationStatus.AssertProperty("healthy");
+        replicationStatus.AssertProperty("relationshipStatus");
+        replicationStatus.AssertProperty("mirrorState");
+        replicationStatus.AssertProperty("totalProgress");
+        replicationStatus.AssertProperty("errorMessage");
+    }
+
+    [Fact(Skip = "Requires a pre-provisioned cross-region replication relationship and recorded session.")]
+    public async Task ReplicationSuspend_ReturnsSuspended()
+    {
+        var result = await CallToolAsync(
+            "netappfiles_replication_suspend",
+            new()
+            {
+                { "account", Settings.DeploymentOutputs["NETAPP_REPLICATION_ACCOUNT_NAME"] },
+                { "pool", Settings.DeploymentOutputs["NETAPP_REPLICATION_POOL_NAME"] },
+                { "volume", Settings.DeploymentOutputs["NETAPP_REPLICATION_VOLUME_NAME"] },
+                { "resource-group", Settings.ResourceGroupName },
+                { "subscription", Settings.SubscriptionId },
+                { "tenant", Settings.TenantId }
+            });
+
+        Assert.True(result.AssertProperty("suspended").GetBoolean());
+    }
+
     [Fact]
     public async Task SnapshotCreate_ReturnsCreatedSnapshot()
     {
